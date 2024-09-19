@@ -154,7 +154,7 @@ Never ungroup settings groups, this will delete hidden parameters and +Gcodetool
 
 == Path to Gcode tab
 
-image:img/path-to-gcode-tab.png[]
+image:img/en-us/path-to-gcode-tab.png[]
 
 Export to G-code (_Path to Gcode_) is the very first function with which the development of +Gcodetools+ began. It is designed to export contours to Gcode for milling and cutting of material. The cutting tool moves in the XY plane repeating the selected contours.
 
@@ -187,7 +187,7 @@ _Sort paths to reduce rapid distance_ - sort paths to reduce idle distance.
 
 == Parameters tab
 
-image:img/parameters-tab.png[]
+image:img/en-us/parameters-tab.png[]
 
 _Select all paths if nothing selected -_ if no path is selected and this option is enabled, then +Gcodetools+ will try to process all paths in the drawing.
 
@@ -199,7 +199,7 @@ _Comment Gcode_ - In this field, you can specify additional comments that will b
 
 == Preferences Tab
 
-image:img/preferences-tab.png[]
+image:img/en-us/preferences-tab.png[]
 
 _File_ - the name of the file to save the finished G-code.
 
@@ -221,7 +221,7 @@ _Full path to log file_ - full path to the log file.
 
 == Area Tab
 
-image:img/area-tab.png[]
+image:img/en-us/area-tab.png[]
 
 Using the _Area_ tab, you can create contours for processing areas. _Area_ uses internal +Inkscape+ functions to create contours, namely _Dynamic offset_ (dynamic indentation). After applying _Area_, the required number of dynamic indentations will be added to the drawing. The _Area_ function does not give the best results in terms of the quality of material sampling. If processing is carried out without overlapping trajectories, then unprocessed areas will remain in sharp corners.
 
@@ -233,7 +233,7 @@ _Area tool overlap_ - parameter that specifies the overlap of trajectories. This
 
 == Fill area tab
 
-image:img/fill-area-tab.png[]
+image:img/en-us/fill-area-tab.png[]
 
 _Fill_ _area_ - the function is used to fill the contour area with straight lines. You can fill using two algorithms - zigzag and spiral. This function is the most stable of all the functions for area processing, since it does not require complex calculations.
 
@@ -247,7 +247,7 @@ _Filling method_ - selection of filling method - zigzag or spiral.
 
 == Area artifacts tab
 
-image:img/aria-artifacts-tab.png[]
+image:img/en-us/aria-artifacts-tab.png[]
 
 _Area artefacts_ Since the function of the Bezier curve indentation is not very simple, sometimes it produces artifacts. And with an increase in the number of indents, the probability of errors increases. The _Area artefacts_ function has been developed to find these errors. It searches for small contours and, depending on the selected action, highlights them with a color or an arrow or deletes them.
 
@@ -257,7 +257,7 @@ _Action_ - the action performed with artifacts. Highlight with color, highlight 
 
 == Orientation points tab
 
-image:img/orientation-points-tab.png[]
+image:img/en-us/orientation-points-tab.png[]
 
 _Orientation_ _points_ (orientation points) are needed to position the part material on the machine/drawing. Using orientation points, you can set the scale, movement, rotation, stretching along the axes.
 
@@ -283,7 +283,7 @@ _Units _- units of measurement, for convenience, standard orientation points are
 
 == Tools library tab
 
-image:img/tools-library-tab.png[]
+image:img/en-us/tools-library-tab.png[]
 
 _Tools library_ (tool library). The tool library creates a template for describing a specific type of tool.
 
@@ -305,7 +305,7 @@ Such machining may be needed when the drawing or part is above (or below) the ma
 . Create or load the necessary contours.
 
 +
-image:img/area-tutorial-0001.png[]
+image:img/en-us/area-tutorial-0001.png[]
 
 . Ungroup, if there are groups in the drawing (*Ctrl+Shift+G*).
 . Combine the contours using Boolean addition (*Ctrl+«+»*).
@@ -313,7 +313,7 @@ image:img/area-tutorial-0001.png[]
 . Select everything and apply the logical operation of subtraction (*Ctrl+«-»*). As a result, you should get one contour depicting the part to which should be processed.
 . Add orientation points (optional step, orientation points for mm will be added automatically if they were not created in advance). _Extensions – Gcodetools – Orientation points_ (see the chapter "Orientation points tab" of this manual). Set the milling depth and other parameters, click "Apply", "Close". The resulting origin points will be in the lower left corner of the sheet, drag them (without ungrouping) to the desired position relative to the drawing (for example, to the lower left corner). (Instead of moving the orientation points, you can move the drawing itself.)
 +
-image:img/area-tutorial-0002.png[]
+image:img/en-us/area-tutorial-0002.png[]
 
 . Add a tool description. _Extensions – Gcodetools – Tools library_ (see the chapter "Tools library tab" of this manual), select the tool type and click "Apply", "Close". The image will be supplemented with a description of the tool, the main parameters:
 * id — serial number and name of the tool
@@ -324,15 +324,15 @@ image:img/area-tutorial-0002.png[]
 * depth step - depth for each processing pass
 * tool change gcode - Gcode for changing the tool
 +
-image:img/area-tutorial-0003.png[]
+image:img/en-us/area-tutorial-0003.png[]
 
 . Select the contour, and execute _Extensions – Gcodetools – Area_ (see the chapter "Area Tab" of this manual), set the number of curves and the width of the processed area along the contour, click "Apply", "Close". The extension adds tool paths to the drawing.
 +
-image:img/area-tutorial-0004.png[]
+image:img/en-us/area-tutorial-0004.png[]
 
 . Ungroup the resulting object (*Ctrl+Shift+G*). Delete the original drawing.
 +
-image:img/area-tutorial-0005.png[]
+image:img/en-us/area-tutorial-0005.png[]
 
 . Convert all remaining trajectories to contours (*Ctrl+Shift+C*), using the node editing tool (*F2*), remove artifacts and edit erroneous areas.
 +
@@ -341,14 +341,14 @@ image:img/area-tutorial-0005.png[]
 To find and delete artifacts, you can use the Area artifacts tool (see the chapter "Area artifacts tab" of this tutorial).
 =================================
 +
-image:img/area-tutorial-0006.png[]
+image:img/en-us/area-tutorial-0006.png[]
 
 . After deleting all unwanted sections of the trajectory, execute _Extensions – Gcodetools – Path to Gcode_ (see the chapter "Path to Gcode tab" of this manual), on the "Preferences" tab, set the folder for output files, select the required postprocessor (for example, "Parametrize Gcode" for the possibility of subsequent movement or scaling (not applicable to area processing, without a corresponding change in the diameter of the cutting tool) processing).
 . (Optional step) On the "Parameters" tab, check the "Select all paths if nothing is selected" box, set the minimum radius of the trajectory arc.
 . (Optional step) On the "Path to Gcode" tab, set the interpolation tolerance and the depth of curve splitting, click "Apply", "Close".
 +
-image:img/area-tutorial-0007.png[]
+image:img/en-us/area-tutorial-0007.png[]
 
 . A file named output_хххх.ngc will be created in the destination folder, which will contain the G-code for the specified processing. Open the file in the CNC system and check the resulting program.
 +
-image:img/area-tutorial-0008.png[]
+image:img/en-us/area-tutorial-0008.png[]
