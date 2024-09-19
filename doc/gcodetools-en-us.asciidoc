@@ -110,7 +110,7 @@ To determine whether an object is an outline, you need to select it and the stat
 
 === Object size
 
-By default, +Inkscape+ calculates the size of objects based on their visible dimensions. That is, the linear dimensions of objects, in addition to the outline dimensions, include the stroke thickness, the dimensions of effects. if you draw a circle of 10x10mm with a stroke of 1mm, then +Inkscape+ will display its size as 11x11mm, but when exporting to G-code, the circle will have a diameter of 10mm. This is due to the fact that the main purpose of +Inkscape+ is vector graphics.
+By default, +Inkscape+ calculates the size of objects based on their visible dimensions. That is, the linear dimensions of objects, in addition to the outline dimensions, include the stroke thickness, the dimensions of effects. If you draw a circle of 10x10mm with a stroke of 1mm, then +Inkscape+ will display its size as 11x11mm, but when exporting to G-code, the circle will have a diameter of 10mm. This is due to the fact that the main purpose of +Inkscape+ is vector graphics.
 
 In order for +Inkscape+ to display the real dimensions of the contours without taking into account the stroke and effects, you need to go to the +Inkscape+ settings by pressing *Ctrl+Shift+P*, in the top item (_Tools_) change _Object area_ to _Geometric area_.
 
@@ -168,7 +168,7 @@ By default, _Path to Gcode_ exports selected contours to G-code, if nothing is s
 
 _Biarc interpolation tolerance_ - tolerance for the accuracy of contour approximation by biarcs. Initially, each contour segment is approximated by one bi-arc, then the maximum distance from the bi-arc to the contour segment is calculated. If it exceeds the specified tolerance in units of measurement (specified by the orientation points), the segment is split into two parts, and the procedure is repeated for each part separately.
 
-_Maximum splitting depth_ - the maximum splitting depth, the maximum number of iterations for approximating a contour segment with bi-arcs. It should be noted that the finite number of parts into which the contour will be split can be much greater than the maximum splitting depth. It is limited to 2n, where n is the maximum splitting depth. If the required accuracy is achieved at some iteration, the contour segment ra will not be split further. If you still want the segment to be split into the maximum number of parts, then simply set the approximation tolerance to 0.
+_Maximum splitting depth_ - the maximum splitting depth, the maximum number of iterations for approximating a contour segment with bi-arcs. It should be noted that the finite number of parts into which the contour will be split can be much greater than the maximum splitting depth. It is limited to 2n, where n is the maximum splitting depth. If the required accuracy is achieved at some iteration, the contour segment will not be split further. If you still want the segment to be split into the maximum number of parts, then simply set the approximation tolerance to 0.
 
 _Cutting order_ is the order in which the contours will be processed. The contours are processed in the order of the Layers in the figure, first the topmost layer is processed, then the layers below. Within a layer, the processing order can be as follows:
 
@@ -227,9 +227,7 @@ Using the _Area_ tab, you can create contours for processing areas. _Area_ uses 
 
 _Maximum area cutting curves_ - this parameter is needed to avoid too many dynamic indentations.
 
-_Area width_ - this is the main parameter on which the number of added contours depends. The number of contours
-
-equals Area width/Tool D (contour width/tool ​​diameter). Contour width is not the width in the general sense, it is the thickness at the thickest point.
+_Area width_ - this is the main parameter on which the number of added contours depends. The number of contours equals Area width/Tool D (contour width/tool ​​diameter). Contour width is not the width in the general sense, it is the thickness at the thickest point.
 
 _Area tool overlap_ - parameter that specifies the overlap of trajectories. This may be necessary to obtain a cleaner result. 0.0 - means no overlap, 0.9 - almost complete overlap.
 
@@ -312,9 +310,7 @@ image:img/area-tutorial-0001.png[]
 . Ungroup, if there are groups in the drawing (*Ctrl+Shift+G*).
 . Combine the contours using Boolean addition (*Ctrl+«+»*).
 . Create a rectangle that will limit the area of ​​the picture, place it in the background (*PageDown* or *End*).
-. Select everything and apply the logical operation of subtraction (*Ctrl+«-»*). As a result, you should get one contour depicting the part to
-
-which should be processed.
+. Select everything and apply the logical operation of subtraction (*Ctrl+«-»*). As a result, you should get one contour depicting the part to which should be processed.
 . Add orientation points (optional step, orientation points for mm will be added automatically if they were not created in advance). _Extensions – Gcodetools – Orientation points_ (see the chapter "Orientation points tab" of this manual). Set the milling depth and other parameters, click "Apply", "Close". The resulting origin points will be in the lower left corner of the sheet, drag them (without ungrouping) to the desired position relative to the drawing (for example, to the lower left corner). (Instead of moving the orientation points, you can move the drawing itself.)
 +
 image:img/area-tutorial-0002.png[]
