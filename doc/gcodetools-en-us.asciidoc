@@ -1,0 +1,358 @@
+Gcodetools user manual
+====================================
+:Author: Drobchenko Nickolay (Nick at forum http://www.cnc-club.ru), _taras_ (_taras_ at forum http://www.cnc-club.ru)
+:Date: 11.07.2011
+:Revision: 0001
+
+== Acknowledgments
+
+=== Developers
+
+* Nikolay Drobchenko (Nick http://www.cnc-club.ru )
+* Vladimir Kalyaev (Dormouse http://www.cnc-club.ru )
+* Henry Nicolas (Alfcnc http://www.cnc-club.ru )
+* Chris Lusby Taylor (ChrisInNewbury http://www.cnc-club.ru )
+
+=== Translators
+
+* John Brooker (greybeard from http://www.cnczone.com )
+
+[TIP]
+==================================
+.Note
++gcodetools+ - highlights software product names.
+*Bold* - keyboard commands
+_Italic_ - operation (function) name in menu
+==================================
+
+== Description of Gcodetools
+
++Gcodetools+ is an extension for the graphic vector editor +Inkscape+ for creating G-code from an image.
++Gcodetools+ can generate G-code for various types of processing - 2.5D milling, turning, material cutting, etc.
+
++Gcodetools+ and +Inkscape+ are distributed under the GNU GPL license, i.e. free of charge, including for commercial use. Both programs are cross-platform, there are distributions for Windows, Linux and MacOS.
+
+== Installing Gcodetools
+
+=== Windows
+Unzip the archive and copy all files to the _Program Files\Inkscape\share\extensions\_ directory
+
+=== Linux
+Unzip the archive and copy all files to the _/home/<username>/.config/inkscape/extensions/_ or _/usr/share/inkscape/extensions/_ directory and restart inkscape
+
+The development version can be downloaded from http://www.launchpad.net/gcodetools using bazaar, for this, run +bzr branch lp:gcodetools+ in the console or via the web interface http://bazaar.launchpad.net/~gcodetools.team/gcodetools/develope/files.
+
+== Gcodetools Features
+
+* Export to Gcode
+** Export curves to Gcode
+** Approximation using circular interpolation (G02 and G03)
+** Automatic curve splitting to achieve a specified degree of accuracy
+** Machining with tool change
+** Export Gcode in parametric or normal forms
+** Adding your own headers and endings
+** Selecting units of measurement
+** Multi-pass machining
+** Automatically adding a digital suffix to the name of the saved file
+* Machining on a lathe
+** Creating toolpaths for machining a part on a lathe
+** Calculating a finishing pass
+** Setting the depth for a finishing pass
+*g Setting the number of finishing passes
+** Two different methods for calculating finishing passes
+** Replacing standard axes
+* Machining area contours
+** Creating toolpaths for machining area contours
+** Possibility of correcting created toolpaths
+* Engraving with figure cutters
+** Creating trajectories for processing contours with a figure cutter
+** Setting an arbitrary cutter shape
+* Tool library
+** Building various tool and processing parameters (tool diameter, processing speed, penetration per pass, penetration speed, setting an arbitrary code before/after penetration, tool shape, arbitrary tool change code)
+** Possibility of copying tools
+** Possibility of processing with tool change
+* Orientation system
+** Setting scaling along all axes
+** Setting rotations in the XY plane
+** Setting offsets along all axes
+** Orientation by arbitrary points
+* Postprocessor
+** Creating an arbitrary postprocessor program or choosing from a standard set
+** Scaling and offsetting Gcode
+** Arbitrary replacement of commands (including simultaneous replacement)
+** Gcode parameterization
+** Rounding off the length of the fractional part of numbers in Gcode
+* Preliminary drawing check
+** Selection of small contours (possible area artifacts)
+** Checking the tool ownership
+** Checking the processing order
+* Plotter cutting
+** Export to Gcode for a plotter with a tangential knife. The fourth axis A is the angle of the knife.
+
+* General
+** Checking for updates.
+
+== Basic concepts
+
+=== Contour
+
++Gcodetools+ works with Bezier curves - the main element of drawings in +Inkscape+. All vector objects (shapes, texts, clones) can be converted to a Bezier curve without losing accuracy. To convert an object to a Bezier curve (hereinafter, a contour or path), you need to execute Contour-Contour object or press *Ctrl+Shift+C*.
+
+=== Object
+
+Objects that are not contours, i.e. those objects that need to be converted to outlines:
+
+* Text
+* Shapes: Circles, ellipses, rectangles, stars, polygons
+* Dynamic insets
+
+To determine whether an object is an outline, you need to select it and the status bar should say Outline or several Outlines.
+
+=== Object size
+
+By default, +Inkscape+ calculates the size of objects based on their visible dimensions. That is, the linear dimensions of objects, in addition to the outline dimensions, include the stroke thickness, the dimensions of effects. if you draw a circle of 10x10mm with a stroke of 1mm, then +Inkscape+ will display its size as 11x11mm, but when exporting to G-code, the circle will have a diameter of 10mm. This is due to the fact that the main purpose of +Inkscape+ is vector graphics.
+
+In order for +Inkscape+ to display the real dimensions of the contours without taking into account the stroke and effects, you need to go to the +Inkscape+ settings by pressing *Ctrl+Shift+P*, in the top item (_Tools_) change _Object area_ to _Geometric area_.
+
+Units of measurement - by default +Inkscape+ uses - px (pixels). Relationships between pixels and other units of measurement
+
+* 1 inch = 90 px = 25.4 mm
+* 1 mm = 3.543 px ~ 0.03937 inches
+* 1 px = 0.2822 mm ~ 0.01111 inches
+
+Almost all internal calculations are performed in px. Units of measurement can be changed in the document settings by pressing *Ctrl+Shift+D*. You can set up display units, ruler units, and grid units.
+
+== Gcodetools Interface
+
+=== Tabs
+
+Since +Gcodetools+ is a standard +Inkscape+ extension, the possibilities for creating interfaces are very limited. The choice of the function to perform is determined by the tab open when you click the _Apply_ button. For example, if you want to export to G-code, you need to open the _Path to Gcode_ tab before clicking _Apply_. If you get the following error:
+
+[WARNING]
+=================================
+Select one of the action tabs - Path to Gcode, Area, Engraving, DXF points, Orientation, Offset, Lathe or Tools library.
+
+Current active tab id is "preferences"
+=================================
+
+then this means that you have not opened the required tab before clicking Apply.
+
+Previously, all the +Gcodetools+ tabs were placed on one window, but there were more and more tabs and they no longer fit on the screen, so I had to place them on different windows. At the same time, the same tabs can be found on several windows as needed.
+
+=== Live preview
+
+_Live preview_ - never turn on Live preview. To prevent the +Gcodetools+ window from blocking +Inkscape+ and closing when you click Apply, +Gcodetools+ is made as a live effect. This causes _Live Preview_ to appear. But live preview can cause problems, so it's better not to touch _live preview_!
+
+=== Additional settings
+
+Some settings, such as tool parameters and orientation points, are moved from the +Gcodetools+ form to the drawing itself. In this case, they can be edited using the _Text_ tool (*F8*). For example, to change the feed, turn on the Text tool and change the number opposite the Feed field in the tool description. Try to edit such parameters only using the _Text_ tool. Such settings, for example, tool definitions, can be copied using the usual +Inkscape+ methods.
+
+[IMPORTANT]
+=================================
+Never ungroup settings groups, this will delete hidden parameters and +Gcodetools+ will not be able to detect these settings!
+=================================
+
+== Path to Gcode tab
+
+image:img/path-to-gcode-tab.png[]
+
+Export to G-code (_Path to Gcode_) is the very first function with which the development of +Gcodetools+ began. It is designed to export contours to Gcode for milling and cutting of material. The cutting tool moves in the XY plane repeating the selected contours.
+
+_Path to Gcode_ uses Orientation Points and Tool properties to define machining parameters (feed, penetration rate, penetration per pass, additional G-code before/after contour (see below)). If Orientation Points or tool definition were not specified, then +Gcodetools+ will add a standard tool and standard orientation points, about which an additional message will be sent.
+
+_Path to Gcode_ is one of the main functions and it will be used at the final stage of G-code creation for almost any type of machining.
+
+By default, _Path to Gcode_ exports selected contours to G-code, if nothing is selected, then _Path to Gcode_ will try to export all contours in the drawing (this behavior can be changed by disabling the _Select all paths if nothing selected_ option on the _Options_ tab).
+
+=== Path to Gcode Parameters
+
+_Biarc interpolation tolerance_ - tolerance for the accuracy of contour approximation by biarcs. Initially, each contour segment is approximated by one bi-arc, then the maximum distance from the bi-arc to the contour segment is calculated. If it exceeds the specified tolerance in units of measurement (specified by the orientation points), the segment is split into two parts, and the procedure is repeated for each part separately.
+
+_Maximum splitting depth_ - the maximum splitting depth, the maximum number of iterations for approximating a contour segment with bi-arcs. It should be noted that the finite number of parts into which the contour will be split can be much greater than the maximum splitting depth. It is limited to 2n, where n is the maximum splitting depth. If the required accuracy is achieved at some iteration, the contour segment ra will not be split further. If you still want the segment to be split into the maximum number of parts, then simply set the approximation tolerance to 0.
+
+_Cutting order_ is the order in which the contours will be processed. The contours are processed in the order of the Layers in the figure, first the topmost layer is processed, then the layers below. Within a layer, the processing order can be as follows:
+
+* _Path by path_ - processing is carried out contour by contour. That is, first the first contour is processed entirely, then the second, etc. All contours are processed to the maximum depth before moving on to the next contour.
+
+* _Subpath by Subpath_ - processing subcontour by subcontour. The same as _Path by path_, but at the level of subcontours. Contours can consist of several subcontours. For example, a contour with a hole is two subcontours - external and internal. Even if a subcontour has no holes and seems continuous, it may still consist of several subcontours. To separate subcontours, press _Contour_ - _Split_ (*Ctrl+Shift+K*). To combine contours into one contour, press _Contour_ - _Combine_ or *Ctrl+K*.
+* _Pass by pass_ - pass by pass. First, all contours will be processed to the depth of the first pass, then to the depth of the second pass, etc.
+
+_Depth function_ - this function can be used to additionally define the processing depth. When specifying _Depth function_, you can use mathematical and other python functions (for example, math.sin(), math.sqrt()). Constants can also be defined:
+
+* d - processing depth specified using orientation points
+* s - surface coordinate specified using orientation points
+* c - color coefficient. A number from 0 to 1 that determines the brightness of the contour color (0.0 - white, 1.0 - black).
+
+_Sort paths to reduce rapid distance_ - sort paths to reduce idle distance.
+
+== Parameters tab
+
+image:img/parameters-tab.png[]
+
+_Select all paths if nothing selected -_ if no path is selected and this option is enabled, then +Gcodetools+ will try to process all paths in the drawing.
+
+_Minimun arc radius_ - EMC2 may return an error if the radius of the G02 or G03 arc is less than 0.02 mm (errors are also possible in other controllers on small arcs). Therefore, all arcs with a radius less than _Minimun arc radius_ will be replaced by straight segments G01.
+
+_Get additional comments from objects properties_ - +gcodetools+ can extract additional parameters of objects from their properties. These parameters can be edited by right-clicking on the object and selecting _Properties_.
+
+_Comment Gcode_ - In this field, you can specify additional comments that will be displayed before the contour is processed.
+
+== Preferences Tab
+
+image:img/preferences-tab.png[]
+
+_File_ - the name of the file to save the finished G-code.
+
+_Add numeric suffix to filename_ - if enabled, a numeric suffix will be automatically added to the file name to prevent overwriting old exports, for example output.ngc -> output_0001.ngc.
+
+_Directory_ - the folder in which the G-code will be saved. Make sure that you have write permissions to this folder, otherwise +Gcodetools+ will return an error. If this directory contains header or footer files, they will be used as the header and end of the G-code instead of the standard headers.
+
+_Z safe distance for G00 move over blanc_ - safe distance above the surface of the material at which movements from contour to contour will be performed. Set this distance greater than all the workpiece fastening elements in order to be sure that you will not crash into them with the tool.
+
+_Units_ - units of measurement mm or inches determines the setting of the G20 or G21 code in the finished G-code.
+
+_Post processor_ - pre-defined post processors for additional Gcode preparation.
+
+_Additional post processor_ - you can specify an arbitrary post-processor. For more information on the capabilities and syntax of post-processors, see the link: http://cnc-club.ru/forum/viewtopic.php?f=33&t=78 (only in English for now).
+
+_Generate log file_ - generate a log file.
+
+_Full path to log file_ - full path to the log file.
+
+== Area Tab
+
+image:img/area-tab.png[]
+
+Using the _Area_ tab, you can create contours for processing areas. _Area_ uses internal +Inkscape+ functions to create contours, namely _Dynamic offset_ (dynamic indentation). After applying _Area_, the required number of dynamic indentations will be added to the drawing. The _Area_ function does not give the best results in terms of the quality of material sampling. If processing is carried out without overlapping trajectories, then unprocessed areas will remain in sharp corners.
+
+_Maximum area cutting curves_ - this parameter is needed to avoid too many dynamic indentations.
+
+_Area width_ - this is the main parameter on which the number of added contours depends. The number of contours
+
+equals Area width/Tool D (contour width/tool ​​diameter). Contour width is not the width in the general sense, it is the thickness at the thickest point.
+
+_Area tool overlap_ - parameter that specifies the overlap of trajectories. This may be necessary to obtain a cleaner result. 0.0 - means no overlap, 0.9 - almost complete overlap.
+
+== Fill area tab
+
+image:img/fill-area-tab.png[]
+
+_Fill_ _area_ - the function is used to fill the contour area with straight lines. You can fill using two algorithms - zigzag and spiral. This function is the most stable of all the functions for area processing, since it does not require complex calculations.
+
+_Area fill angle_ - angle of inclination of straight lines. 0 - vertical lines.
+
+_Area fill shift_ - shift of the "phase" of filling with lines (from 0 to 1).
+
+_Area fill overlap_ - overlap of trajectories. It is necessary for obtaining higher quality processing and easier material removal. (0 - no overlap, 0.9 - almost complete overlap)
+
+_Filling method_ - selection of filling method - zigzag or spiral.
+
+== Area artifacts tab
+
+image:img/aria-artifacts-tab.png[]
+
+_Area artefacts_ Since the function of the Bezier curve indentation is not very simple, sometimes it produces artifacts. And with an increase in the number of indents, the probability of errors increases. The _Area artefacts_ function has been developed to find these errors. It searches for small contours and, depending on the selected action, highlights them with a color or an arrow or deletes them.
+
+_Aretefact diametr_ - the maximum size of the artifact, all contours smaller than the specified size will be highlighted\deleted.
+
+_Action_ - the action performed with artifacts. Highlight with color, highlight with arrow, delete.
+
+== Orientation points tab
+
+image:img/orientation-points-tab.png[]
+
+_Orientation_ _points_ (orientation points) are needed to position the part material on the machine/drawing. Using orientation points, you can set the scale, movement, rotation, stretching along the axes.
+
+If you only need a simple orientation without non-proportional stretching along the axes and reflections, use orientation by two points.
+
+After applying _Orientation_ _points_, two or three orientation points will be added to the drawing. An orientation point is an arrow with coordinates. The position of the point is determined based on the position of the arrow's apex.
+
+Using orientation points, you can orient a part by specific points. To do this, select any two or three points on the part, move the orientation points to them and set the desired coordinates for them.
+
+In the simplest case, orientation points are simply added to the drawing and set the origin of coordinates.
+
+Orientation points apply to the current layer and all layers below (until the next layer has its own orientation points).
+
+IMPORTANT: Warning! Do not ungroup orientation points! This will cause them to malfunction! To move only one point, simply enter the group by double-clicking on the group. Coordinates can be edited using the _Text_ tool (*F8*) ​​without ungrouping the elements.
+
+_Orientation type_ - orientation by two or three points.
+
+_Z surface_ - height (Z coordinate) of the material surface (start of processing)
+
+_Z depth_ - depth (Z coordinate) of processing.
+
+_Units _- units of measurement, for convenience, standard orientation points are added at points (0,0), (0,100) and (100,0) for millimeters and (0,0), (0,5) and (5,0) for inches.
+
+== Tools library tab
+
+image:img/tools-library-tab.png[]
+
+_Tools library_ (tool library). The tool library creates a template for describing a specific type of tool.
+
+In the tool description, you can set various parameters, starting with simple ones, such as diameter, cutting speed, depth per pass, and ending with more complex ones - G-code before and after the contour, which allow you to set, for example, codes for turning on or off the spindle or other cutting tool.
+
+== Checking the processing
+
+In order to see what will actually be cut, you can use +Inkscape+ and not use external tools. To do this:
+
+* Select all the contours that will be exported or preview contours
+* Assign them a stroke thickness equal to the thickness of the cutting tool
+* Select the fillet on the contour corners and the fillet on the contour ends in the _Stroke Style_ tab in the _Fill_ and _Stroke_ window
+* This way the stroke will depict the profile of the cutter along the entire cutting path.
+
+== Step-by-step guide to creating a G-code for machining an area of ​​a part
+
+Such machining may be needed when the drawing or part is above (or below) the main array of material.
+
+. Create or load the necessary contours.
+
++
+image:img/area-tutorial-0001.png[]
+
+. Ungroup, if there are groups in the drawing (*Ctrl+Shift+G*).
+. Combine the contours using Boolean addition (*Ctrl+«+»*).
+. Create a rectangle that will limit the area of ​​the picture, place it in the background (*PageDown* or *End*).
+. Select everything and apply the logical operation of subtraction (*Ctrl+«-»*). As a result, you should get one contour depicting the part to
+
+which should be processed.
+. Add orientation points (optional step, orientation points for mm will be added automatically if they were not created in advance). _Extensions – Gcodetools – Orientation points_ (see the chapter "Orientation points tab" of this manual). Set the milling depth and other parameters, click "Apply", "Close". The resulting origin points will be in the lower left corner of the sheet, drag them (without ungrouping) to the desired position relative to the drawing (for example, to the lower left corner). (Instead of moving the orientation points, you can move the drawing itself.)
++
+image:img/area-tutorial-0002.png[]
+
+. Add a tool description. _Extensions – Gcodetools – Tools library_ (see the chapter "Tools library tab" of this manual), select the tool type and click "Apply", "Close". The image will be supplemented with a description of the tool, the main parameters:
+* id — serial number and name of the tool
+* diametr — diameter of the cutting part of the tool
+* feed — feed rate
+* penetration angle - angle of penetration (not yet implemented!)
+* penetration feed - penetration speed (feed when deepening the cutter)
+* depth step - depth for each processing pass
+* tool change gcode - Gcode for changing the tool
++
+image:img/area-tutorial-0003.png[]
+
+. Select the contour, and execute _Extensions – Gcodetools – Area_ (see the chapter "Area Tab" of this manual), set the number of curves and the width of the processed area along the contour, click "Apply", "Close". The extension adds tool paths to the drawing.
++
+image:img/area-tutorial-0004.png[]
+
+. Ungroup the resulting object (*Ctrl+Shift+G*). Delete the original drawing.
++
+image:img/area-tutorial-0005.png[]
+
+. Convert all remaining trajectories to contours (*Ctrl+Shift+C*), using the node editing tool (*F2*), remove artifacts and edit erroneous areas.
++
+[TIP]
+=================================
+To find and delete artifacts, you can use the Area artifacts tool (see the chapter "Area artifacts tab" of this tutorial).
+=================================
++
+image:img/area-tutorial-0006.png[]
+
+. After deleting all unwanted sections of the trajectory, execute _Extensions – Gcodetools – Path to Gcode_ (see the chapter "Path to Gcode tab" of this manual), on the "Preferences" tab, set the folder for output files, select the required postprocessor (for example, "Parametrize Gcode" for the possibility of subsequent movement or scaling (not applicable to area processing, without a corresponding change in the diameter of the cutting tool) processing).
+. (Optional step) On the "Parameters" tab, check the "Select all paths if nothing is selected" box, set the minimum radius of the trajectory arc.
+. (Optional step) On the "Path to Gcode" tab, set the interpolation tolerance and the depth of curve splitting, click "Apply", "Close".
++
+image:img/area-tutorial-0007.png[]
+
+. A file named output_хххх.ngc will be created in the destination folder, which will contain the G-code for the specified processing. Open the file in the CNC system and check the resulting program.
++
+image:img/area-tutorial-0008.png[]
